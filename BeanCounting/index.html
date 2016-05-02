@@ -10,23 +10,17 @@
   <script>
 
     function countChar(string, ch) {
-    var count=0;
-    var pos = string.indexOf(ch);
-    while (pos != -1){
-      count ++;
-      pos = string.indexOf(ch,pos + 1);
-    }
-    return count; 
+      var count=0;
+      var pos = string.indexOf(ch);
+      while (pos != -1){
+       count ++;
+       pos = string.indexOf(ch,pos + 1);
+       }
+      return count; 
     }
 
     function countBs(string) {
-    var count=0;
-    var pos = string.indexOf("B");
-    while (pos != -1){
-      count ++;
-      pos = string.indexOf("B",pos + 1);
-    }
-    return count;
+      return countChar(string,"B")
     }
 
   console.log(countBs("BBC")); // → 2

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="libs.js"></script>
+  <script src="ancestry.js"></script>
+</head>
+<body>
+
+  <script>
+
+var ancestry = JSON.parse(ANCESTRY_FILE);
+function average(array) {
+  function plus(a, b) { return a + b; }
+  return array.reduce(plus) / array.length;
+};
+
+function getStatistic() {
+	var myarray = {};
+  	ancestry.map(function (person) {
+  	    var century = Math.ceil(person.died / 100);
+        var age = person.died - person.born;
+        if (century in myarray) {
+            myarray[century].push(age);
+        } else {
+            myarray[century] = [age];
+        }
+     });
+     
+     res = [];
+     for (var century in myarray) {
+     	res.push(century + ': ' + average(myarray[century]));
+     }
+     return res;
+	
+};
+
+console.log(getStatistic());
+
+
+
+// → 16: 43.5
+//   17: 51.2
+//   18: 52.8
+//   19: 54.8
+//   20: 84.7
+//   21: 94
+
+
+  </script>
+
+   <script src="test.js"></script>
+</body>
+</html>

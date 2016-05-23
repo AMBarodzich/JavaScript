@@ -10,21 +10,20 @@
   <script>
 
 function every(array, predicate) {
-	var myArray = array.filter(
-		function(solution){
-			return predicate(solution);
+	for (var solution of array){
+		if (!predicate(solution)){
+			return false;
 		}
-	);
-	return myArray.length === array.length;	
+	}	
+	return true;	
 }
 
 function some(array, predicate) {
-	var myArray = array.filter(
-    	function(solution) {
-      		return predicate(solution);
-    	}
-  	);
-  return myArray.length === 1;
+	for (var i = 0; i < array.length; i++) {
+    	if (predicate(array[i]))
+     		return true;
+    }
+  	return false;
 }
 
 console.log(every([NaN, NaN, NaN], isNaN)); // → true

@@ -1,0 +1,11 @@
+<!doctype html>
+
+<input type="text">
+<script>
+  var field = document.querySelector("input");
+  addEventListener('keypress', function(event) {
+  	if(event.keyCode == 81 || event.keyCode == 87 || event.keyCode == 88 || event.keyCode == 113 || event.keyCode == 119 || event.keyCode == 120) {
+ 	event.preventDefault();	
+ 	} 
+  });
+</script>

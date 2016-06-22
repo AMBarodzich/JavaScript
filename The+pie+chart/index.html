@@ -1,0 +1,40 @@
+<!doctype html>
+<script src="15_game.js"></script>
+<script src="game_levels.js"></script>
+<script src="16_canvas.js"></script>
+
+<canvas width="600" height="300"></canvas>
+<script>
+  var cx = document.querySelector("canvas").getContext("2d");
+  var total = results.reduce(function(sum, choice) {
+    return sum + choice.count;
+  }, 0);
+
+  var currentAngle = -0.5 * Math.PI;
+  var centerX = 300, centerY = 150;
+  // Add code to draw the slice labels in this loop.
+  results.forEach(function(result) {
+    var sliceAngle = (result.count / total) * 2 * Math.PI;
+    cx.beginPath();
+    cx.arc(centerX, centerY, 100,
+           currentAngle, currentAngle + sliceAngle);
+    
+    var midAngle = currentAngle + 0.5 * sliceAngle;
+    var X = Math.cos(midAngle) * 110 + centerX;
+    var Y = Math.sin(midAngle) * 115 + centerY;
+    cx.textBaseLine = "middle";
+    if (Math.cos(midAngle) > 0)
+      cx.textAlign = "left";
+    else
+      cx.textAlign = "right";
+    cx.font = "15px Georgia";
+    cx.fillStyle = "green";
+    cx.fillText(result.name, X, Y);
+
+    currentAngle += sliceAngle;
+    cx.lineTo(centerX, centerY);
+    cx.fillStyle = result.color;
+    cx.fill();
+  });
+</script>
+

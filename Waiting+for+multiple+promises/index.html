@@ -1,28 +1,23 @@
 <!doctype html>
 
 <script>
+
 function all(promises) {
-    return new Promise(function(success, fail) {
-        var results = [];
-        var failed = false;
-        promises.forEach(function(promise) {
-            promise.then(function(result) {
-
-                results.push(result);
-
-                if (results.length == promises.length) {
-                    if (!failed)
-                        success(results);
-                }
-            }, function (error) {
-
-                failed = true;
-                fail(error);
-            });
-        });
-
-
+  return new Promise(function(succeed, fail) {
+    var results = [], waiting = promises.length;
+    promises.forEach(function(promise, i) {
+      promise.then(function(result) {
+        results[i] = result;
+        waiting -= 1;
+        if (waiting == 0)
+          succeed(results);
+      }, function(error) {
+        fail(error);
+      });
     });
+    if (promises.length == 0)
+      succeed(results);
+  });
 }
 
 // Test code.

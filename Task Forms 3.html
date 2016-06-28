@@ -1,0 +1,123 @@
+<!doctype html>
+<script src="promise.js"></script>
+
+<div id="grid"></div>
+<button id="next">Next generation</button>
+<button id="run">Auto run</button>
+
+<script>
+  function generateGrid (width, height) {
+      var table = document.createElement("table");
+      for (var i = 0; i < height; i++) {
+        var table_tr = document.createElement("tr");
+        for (var j = 0; j < width; j++) {
+          var table_td = document.createElement("td");
+          table_td.innerHTML = "<input type='checkbox'" +
+                                "id=" + i.toString() + "-" + j.toString() +
+                                ">";
+          table_tr.appendChild(table_td);
+        }
+        table.appendChild(table_tr);
+      }
+      return table;
+    }
+    var width = 15;
+    var height = 15;
+    var gridNum = width * height;
+    
+    var grid = document.getElementById("grid");
+    grid.appendChild(generateGrid(width, height));
+    function randomLifes (gridNum) {
+      var lifes = [];
+      for (var i = 0; i < gridNum; i++) {
+        lifes[i] = Math.round(Math.random());
+      }
+      return lifes;
+    }
+    function getLifeId (lifenum, width) {
+      var row_number = Math.floor(lifenum / width);
+      var col_number = lifenum % width;
+      return row_number.toString() + "-" + col_number.toString();
+    }
+    
+    function updateGridLife (lifes) {
+      lifes.forEach(function(life, index) {
+        var life_id = getLifeId(index, width);
+        var life_element = document.getElementById(life_id);
+        life_element.checked = life;
+      });
+    }
+    var lifes = randomLifes(gridNum);
+    updateGridLife (lifes);
+    function getNeighborsId (lifenum, width, height) {
+      var nb = [];
+      var row = Math.floor(lifenum / width);
+      var col = lifenum % width;
+      
+      if ((row - 1) >= 0) {
+        if ((col - 1) >= 0) {
+          nb.push((row - 1).toString() + "-" + (col - 1).toString());
+          nb.push(row.toString() + "-" + (col - 1).toString());
+        }
+        nb.push((row - 1).toString() + "-" + col.toString());
+        if ((col + 1) < width) {
+          nb.push((row - 1).toString() + "-" + (col + 1).toString());
+          nb.push(row.toString() + "-" + (col + 1).toString());
+        }
+      } else if (row == 0) {
+        if ((col - 1) >= 0) {
+          nb.push(row.toString() + "-" + (col - 1).toString());
+        }
+        if ((col + 1) < width) {
+          nb.push(row.toString() + "-" + (col + 1).toString());
+        }
+      }
+     
+      if ((row + 1) < height) {
+        if ((col - 1) >= 0) {
+          nb.push((row + 1).toString() + "-" + (col - 1).toString());
+        }
+        nb.push((row + 1).toString() + "-" + col.toString());
+        if ((col + 1) < width) {
+          nb.push((row + 1).toString() + "-" + (col + 1).toString());
+        }
+      }
+      return nb;
+    }
+    function nextGeneration () {
+      var new_lifes = lifes;
+      lifes.forEach(function (life, index) {
+        var neighborsNum = 0;
+        var neighborsId = getNeighborsId(index, width, height);
+        neighborsId.forEach(function (nb) {
+          var nb_element = document.getElementById(nb);
+          if (nb_element.checked)
+            neighborsNum += 1;
+        });
+        var life_element = document.getElementById(getLifeId(index, width));
+        if (life_element.checked) {
+          if ((neighborsNum < 2) || (neighborsNum > 3))
+            new_lifes[index] = false;
+          else if ((neighborsNum == 2) || (neighborsNum == 3))
+            new_lifes[index] = true;
+        } else {
+          if (neighborsNum == 3)
+            new_lifes[index] = true;
+        }
+      });
+      updateGridLife (new_lifes);
+      lifes = new_lifes;
+    }
+    var turn = document.getElementById("next");
+    turn.addEventListener("click", nextGeneration);
+    var autorun = document.getElementById("run");
+    var running = null;
+    autorun.addEventListener("click", function () {
+      if (running) {
+        clearInterval(running);
+        running = null;
+      } else {
+        running = setInterval(nextGeneration, 1000);
+      }
+    });
+</script>

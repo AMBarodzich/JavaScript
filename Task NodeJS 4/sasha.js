@@ -27,23 +27,24 @@ function changeMode (mode) {
 
 
 
-function request(options, callback) {
+function request(options, callback, method, words) {
   var req = new XMLHttpRequest();
-  req.open(options.method || "GET", options.pathname, true);
+  req.open(method, options, true);
   req.addEventListener("load", function() {
     if (req.status < 400)
       callback(null, req.responseText);
     else
-      callback(new Error("Request failed: " + req.statusText));
+      callback(new Error("Request failed: " + req.statusText), null);
   });
-  req.addEventListener("error", function() {
-    callback(new Error("Network error"));
-  });
-  req.send(options.body || null);
+  if (method === "GET") {
+    req.send(options.body || null);
+  } else if (method === "PUT") {
+    req.send(words);
+  }
 }
 
 function loadFileList() {
-  request({pathname: "/"}, function(error, fileList) {
+  request("/", function(error, fileList) {
     if (error) throw error;
     var fileListArray = fileList.split('\n');
     for (var i = 0; i < fileListArray.length; i++) {

@@ -1,6 +1,28 @@
 var selectElement = document.getElementById("fileList");
 var textAreaElement = document.getElementById("textId");
+var editBtn = document.getElementById("editBtn");
 var saveBtn = document.getElementById("saveBtn");
+
+
+changeMode ("read");
+function editMode() {
+  changeMode ("edit");
+}
+
+loadFileList();
+
+function changeMode (mode) {
+  if (mode == "edit") {
+    textAreaElement.disabled = false;
+    document.getElementById("saveBtn").style.display = "inline";
+    document.getElementById("editBtn").style.display = "none";
+  } else if (mode == "read") {
+    textAreaElement.disabled = true;
+    document.getElementById("saveBtn").style.display = "none";
+    document.getElementById("editBtn").style.display = "inline";
+  }
+}
+
 
 
 
@@ -35,17 +57,20 @@ function loadFileList() {
 }
 
 function loadCurrentFile () {
-  var curOption = selectElement.value;
-  request(curOption, function(error, fileText) {
+  var expression = selectElement.value;
+  request(expression, function(error, fileText) {
     if (error) throw error; 
     textAreaElement.value = fileText;
   }, "GET");  
 }
 
-function saveChanges() {
-  request({pathname: filelist.value,
-           method: "PUT",
-           body: textarea.value}, function(error) {
-    if (error) throw error;
-  });
+function saveChanges () {
+  var expression = selectElement.value;
+  var view = textAreaElement.value;
+  request(expression, function(error, fileText) {
+    if (error) throw error; 
+    textAreaElement.value = fileText;
+  }, "PUT", view);  
+  loadCurrentFile();
+  changeMode ("read");
 }
